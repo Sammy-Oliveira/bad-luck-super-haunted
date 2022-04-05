@@ -21,7 +21,7 @@ const MOVE_SPEED = 200
 const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 
-k.addLevel([
+addLevel([
   '!                                        !',
   '!                                        !',
   '!                                        !', 
@@ -71,7 +71,7 @@ const score = add([
   }
 ])
 
-k.keyDown('left', () => {
+keyDown('left', () => {
   player.move(-MOVE_SPEED, 0)
   player.flipX(true);
 })
