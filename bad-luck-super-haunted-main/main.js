@@ -15,7 +15,14 @@ loadPedit("flashlight", "sprites/flashlight.pedit");
 loadPedit("table", "sprites/table.pedit");
 loadPedit("cat", "sprites/cat.pedit");
 loadPedit("invis-wall", "sprites/invis-wall.pedit");
-
+// let img1 = loadImage(assets/wood.png);
+// let img2 = loadImage(assets/door.png);
+// let img3 = loadImage(assets/player.png);
+// let img4 = loadImage(assets/enemy1.png);
+// let img5 = loadImage(assets/flashlight.png);
+// let img6 = loadImage(assets/table.png);
+// let img7 = loadImage(assets/cat.png);
+// let img8 = loadImage(assets/invis-wall.png);
 
 const MOVE_SPEED = 200
 const JUMP_FORCE = 550
