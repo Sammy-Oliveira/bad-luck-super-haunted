@@ -100,7 +100,7 @@ addLevel([
   '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
  '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(),scale(0.7),],
- '^' : ()=>[sprite('enemy2'), 'enemy2', area(), scale(0.7),],
+ '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), scale(0.7),],
   '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(0.5),],
 })
@@ -177,9 +177,23 @@ action('enemy1', (s)=> {
   
 })
 
+action('enemy2', (s)=> {
+  s.move(ENEMY_SPEED, 0)
+  
+})
+
 //enemy movement
 
 onCollide('enemy1', 'invis-wall', (s,p)=> {
+  if(ENEMY_SPEED == 50){
+    s.flipX(false);
+  } else{
+   s.flipX(true);
+  }
+  ENEMY_SPEED = ENEMY_SPEED * -1
+})
+
+onCollide('enemy2', 'invis-wall', (s,p)=> {
   if(ENEMY_SPEED == 50){
     s.flipX(false);
   } else{
