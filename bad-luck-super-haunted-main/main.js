@@ -11,7 +11,7 @@ loadPedit("wood", "sprites/wood.pedit");
 loadPedit("door", "sprites/door.pedit");
 loadPedit("player", "sprites/player.pedit");
 loadPedit("enemy1", "sprites/enemy1.pedit");
-loadPedit("flashlight", "sprites/flashlight.pedit");
+loadPedit("enemy2", "sprites/enemy2.pedit");
 loadPedit("table", "sprites/table.pedit");
 loadPedit("cat", "sprites/cat.pedit");
 loadPedit("invis-wall", "sprites/invis-wall.pedit");
@@ -100,7 +100,7 @@ addLevel([
   '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
  '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(),scale(0.7),],
- '^' : ()=>[sprite('flashlight'), 'flashlight', area(), scale(0.7),],
+ '^' : ()=>[sprite('enemy2'), 'enemy2', area(), scale(0.7),],
   '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(0.5),],
 })
@@ -164,7 +164,7 @@ player.onCollide('enemy1', (e)=> {
 
 
 //flashlight destroys player
-player.onCollide('flashlight', ()=> {
+player.onCollide('enemy2', ()=> {
   destroy(player);
   shake(2);
   go('lose', { score: score.value})

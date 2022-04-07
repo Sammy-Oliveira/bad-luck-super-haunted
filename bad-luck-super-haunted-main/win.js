@@ -13,7 +13,7 @@ let win = function(args) {
     pos(width()/2, height()/1.5),
    // scale(5),
   ])
-    
+    // enter text to go to next level, "press [blank] to get to next level"
   }
   
   export {win}

@@ -14,7 +14,7 @@ let lose = function(args) {
     pos(width()/2, height()/1.5),
    // scale(5),
   ])
-    
+    //enter text + link, "press [blank] to try again"
   }
   
   export {lose}
