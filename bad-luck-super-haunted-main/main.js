@@ -1,7 +1,5 @@
 import {k} from "./kaboom.js"
 
-//remember to add k to the beginning of practically everything
-
 import {win} from "./win.js"
 scene('win', win);
 import {lose} from "./lose.js"
@@ -11,11 +9,18 @@ loadPedit("wood", "sprites/wood.pedit");
 loadPedit("door", "sprites/door.pedit");
 loadPedit("player", "sprites/player.pedit");
 loadPedit("enemy1", "sprites/enemy1.pedit");
-loadPedit("flashlight", "sprites/flashlight.pedit");
+loadPedit("enemy2", "sprites/enemy2.pedit");
 loadPedit("table", "sprites/table.pedit");
 loadPedit("cat", "sprites/cat.pedit");
 loadPedit("invis-wall", "sprites/invis-wall.pedit");
-
+// let img1 = loadImage(assets/wood.png);
+// let img2 = loadImage(assets/door.png);
+// let img3 = loadImage(assets/player.png);
+// let img4 = loadImage(assets/enemy1.png);
+// let img5 = loadImage(assets/flashlight.png);
+// let img6 = loadImage(assets/table.png);
+// let img7 = loadImage(assets/cat.png);
+// let img8 = loadImage(assets/invis-wall.png);
 
 const MOVE_SPEED = 200
 const JUMP_FORCE = 550
@@ -32,8 +37,60 @@ addLevel([
   '!                                        !',
   '!            !!               !!!!       !',
   '!                                        !',
-  '!      ?   &   ? -   ^        ?          !',
+  '!      ?   &     -   ^        ?          !',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !', 
+  // '!                                        !',
+  // '!       !!!                  !!!         !',
+  // '!                                        !',
+  // '!                  !!!!                  !',
+  // '!                                        !',
+  // '!       !!!                  !!!         !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !', 
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !', 
+  // '!                                        !',
+  // '!        !!!                  !!!        !',
+  // '!                                        !',
+  // '!                   !                    !',
+  // '!                                        !',
+  // '!        !!!                  !!!        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+  // '!                                        !',
+  // '!                                        !',
+  // '!                                        !', 
+  // '!                                        !',
+  // '!        !!!                  !!!        !',
+  // '!                                        !',
+  // '!                   !                    !',
+  // '!                                        !',
+  // '!        !!!                  !!!        !',
+  // '!                                        !',
+  // '!                                        !',
+  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 ], {
   width: 32,
   height: 32,
@@ -41,7 +98,7 @@ addLevel([
   '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
  '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(),scale(0.7),],
- '^' : ()=>[sprite('flashlight'), 'flashlight', area(), scale(0.7),],
+ '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), scale(0.7),],
   '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(0.5),],
 })
@@ -62,6 +119,10 @@ const player = add([
 	area(),
   body()
 ])
+
+player.onUpdate(() => {
+  camPos(player.pos)
+})
 
 const score = add([
   text('0'),
@@ -101,7 +162,7 @@ player.onCollide('enemy1', (e)=> {
 
 
 //flashlight destroys player
-player.onCollide('flashlight', ()=> {
+player.onCollide('enemy2', ()=> {
   destroy(player);
   shake(2);
   go('lose', { score: score.value})
@@ -114,9 +175,23 @@ action('enemy1', (s)=> {
   
 })
 
+action('enemy2', (s)=> {
+  s.move(ENEMY_SPEED, 0)
+  
+})
+
 //enemy movement
 
 onCollide('enemy1', 'invis-wall', (s,p)=> {
+  if(ENEMY_SPEED == 50){
+    s.flipX(false);
+  } else{
+   s.flipX(true);
+  }
+  ENEMY_SPEED = ENEMY_SPEED * -1
+})
+
+onCollide('enemy2', 'invis-wall', (s,p)=> {
   if(ENEMY_SPEED == 50){
     s.flipX(false);
   } else{
