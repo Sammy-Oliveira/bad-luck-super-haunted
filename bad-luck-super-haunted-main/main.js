@@ -1,7 +1,5 @@
 import {k} from "./kaboom.js"
 
-//remember to add k to the beginning of practically everything
-
 import {win} from "./win.js"
 scene('win', win);
 import {lose} from "./lose.js"
