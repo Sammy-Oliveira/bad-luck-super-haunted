@@ -22,6 +22,8 @@ let lose = function(args) {
    // scale(5),
   ])
     //enter text + link, "press [blank] to try again"
-  }
+}
 
-  export {lose}
+
+
+export {lose}

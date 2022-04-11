@@ -26,6 +26,11 @@ const MOVE_SPEED = 200
 const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 
+scene("main", () => {
+
+})
+
+onKeyPress('k', go('main'))
 
 addLevel([
   '!                                        !',
@@ -104,10 +109,7 @@ addLevel([
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(0.5),],
 })
 
-
-
-
-
+scene('game', ({ levelIdx, score }))
 
 const door = add([
   sprite('door'),
