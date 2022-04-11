@@ -26,6 +26,7 @@ loadPedit("invis-wall", "sprites/invis-wall.pedit");
 const MOVE_SPEED = 200
 const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
+let BOSS_SPEED = 50
 
 addLevel([
   '!                                        !',
@@ -106,9 +107,9 @@ addLevel([
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(1.2),],
 })
 
-const door = add([
+let door = add([
   sprite('door'),
-  pos(1200, 288),
+  pos(150, 296),
   width(32), 
   height(64),
   area(),
@@ -122,6 +123,16 @@ const player = add([
 	area(),
   body()
 ])
+
+//next level 
+
+onKeyPress ("w", ()=> {
+  
+  if (player.isColliding(door)) {
+    console.log("door");
+    go('win', { score: score.value})
+  }
+})
 
 player.onUpdate(() => {
   camPos(player.pos)
@@ -179,7 +190,7 @@ action('enemy1', (s)=> {
 })
 
 action('enemy2', (s)=> {
-  s.move(ENEMY_SPEED, 0)
+  s.move(BOSS_SPEED, 0)
   
 })
 
@@ -195,20 +206,27 @@ onCollide('enemy1', 'invis-wall', (s,p)=> {
 })
 
 onCollide('enemy2', 'invis-wall', (s,p)=> {
-  if(ENEMY_SPEED == 50){
+  if(BOSS_SPEED == 50){
     s.flipX(false);
   } else{
    s.flipX(true);
   }
-  ENEMY_SPEED = ENEMY_SPEED * -1
+  BOSS_SPEED = BOSS_SPEED * -1
 })
 
-//next level 
-
-player.onCollide('door', ()=> {
-  keyPress('up', ()=> {
-      go('win', { score: score.value})
-  })
+onCollide('enemy1', 'enemy2', (s,p)=> {
+  // if(ENEMY_SPEED == 50){
+  //   s.flipX(false);
+  // } else{
+  //  s.flipX(true);
+  // }
+  // if(BOSS_SPEED == 50){
+  //   p.flipX(false);
+  // } else{
+  //  p.flipX(true);
+  // }
+  ENEMY_SPEED = ENEMY_SPEED * -1;
+  BOSS_SPEED = BOSS_SPEED * -1
 })
 
 //action('flashlight', (s)=> {
