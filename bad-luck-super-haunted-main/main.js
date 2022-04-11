@@ -27,6 +27,7 @@ const MOVE_SPEED = 200
 const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 
+
 addLevel([
   '!                                        !',
   '!                                        !',
@@ -105,6 +106,11 @@ addLevel([
   '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(1.2),],
 })
+
+
+
+
+
 
 const door = add([
   sprite('door'),
