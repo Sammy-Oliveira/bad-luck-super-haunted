@@ -28,6 +28,7 @@ const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 let BOSS_SPEED = 50
 
+
 addLevel([
   '!                                        !',
   '!                                        !',
