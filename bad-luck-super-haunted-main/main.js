@@ -23,11 +23,13 @@ loadPedit("invis-wall", "sprites/invis-wall.pedit");
 // let img7 = loadImage(assets/cat.png);
 // let img8 = loadImage(assets/invis-wall.png);
 
-const MOVE_SPEED = 200
-const JUMP_FORCE = 550
+let MOVE_SPEED = 200
+let JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 let BOSS_SPEED = 50
+let poss = false
 
+layer(['back','obj','ui'], 'obj')
 
 addLevel([
   '!                                        !',
@@ -40,7 +42,7 @@ addLevel([
   '!                                        !',
   '!            !!               !!!!       !',
   '!                                        !',
-  '!      ?   &     -   ^        ?          !',
+  '!      ?                 ^    ?          !',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 
   // '!                                        !',
@@ -110,30 +112,63 @@ addLevel([
 
 let door = add([
   sprite('door'),
-  pos(150, 296),
+  pos(1000, 296),
   width(32), 
   height(64),
   area(),
   //body(),
 ])
 
-const player = add([
+let table = add([
+  sprite('table'),
+  pos(450, 320),
+  width(32), 
+  height(64),
+  area(),
+  scale(0.5),
+  layer('obj')
+  //body(),
+])
+
+let player = add([
 	sprite("player"),
 	pos(40, 40),
   scale(0.7),
 	area(),
-  body()
+  body(),
+  layer('obj'),
 ])
 
 //next level 
 
-onKeyPress ("w", ()=> {
+onKeyPress ("up", ()=> {
   
   if (player.isColliding(door)) {
     console.log("door");
     go('win', { score: score.value})
   }
 })
+
+onKeyPress ("down", ()=> {
+  if (player.isColliding(table)) {
+    poss =! poss;
+    if(poss==true){
+    console.log("true"),
+    MOVE_SPEED = 0,
+    JUMP_FORCE = 0
+    player.unuse(sprite('player'))
+    player.use(sprite('table'))
+    }
+    if(poss==false){
+      console.log("false"),
+      MOVE_SPEED = 200,
+      JUMP_FORCE = 550
+      player.use(sprite('player'))
+      player.unuse(sprite('table'))
+      }
+  }
+})
+
 
 player.onUpdate(() => {
   camPos(player.pos)
@@ -142,6 +177,7 @@ player.onUpdate(() => {
 const score = add([
   text('0'),
   pos(50,50),
+  layer('ui'),
   {
     value:0,
   }
@@ -169,18 +205,25 @@ keyPress('space', () => {
 
 //player destroys enemy
 player.onCollide('enemy1', (e)=> {
+  if(poss==false){
   destroy(e);
   shake(2);
   score.value++
   score.text = score.value
+  }
 });
 
 
 //flashlight destroys player
 player.onCollide('enemy2', ()=> {
+  if(poss==true){
+    BOSS_SPEED = BOSS_SPEED * -1;
+  }
+  if(poss==false){
   destroy(player);
   shake(2);
   go('lose', { score: score.value})
+  }
 });
 
 //let CURRENT_ENEMY = ENEMY_SPEED
@@ -206,6 +249,12 @@ onCollide('enemy1', 'invis-wall', (s,p)=> {
   ENEMY_SPEED = ENEMY_SPEED * -1
 })
 
+// if(ENEMY_SPEED == 50){
+//   s.flipX(false);
+// } else{
+//  s.flipX(true);
+// }
+
 onCollide('enemy2', 'invis-wall', (s,p)=> {
   if(BOSS_SPEED == 50){
     s.flipX(false);
@@ -215,18 +264,24 @@ onCollide('enemy2', 'invis-wall', (s,p)=> {
   BOSS_SPEED = BOSS_SPEED * -1
 })
 
+// if(BOSS_SPEED == 50){
+//   s.flipX(false);
+// } else{
+//  s.flipX(true);
+// }
+
 onCollide('enemy1', 'enemy2', (s,p)=> {
-  // if(ENEMY_SPEED == 50){
+  // if(ENEMY_SPEED == -50){
   //   s.flipX(false);
   // } else{
   //  s.flipX(true);
   // }
-  // if(BOSS_SPEED == 50){
+  // if(BOSS_SPEED == -50){
   //   p.flipX(false);
   // } else{
   //  p.flipX(true);
   // }
-  ENEMY_SPEED = ENEMY_SPEED * -1;
+  ENEMY_SPEED = ENEMY_SPEED * -1,
   BOSS_SPEED = BOSS_SPEED * -1
 })
 
