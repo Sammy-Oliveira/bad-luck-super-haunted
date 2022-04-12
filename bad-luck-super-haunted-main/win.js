@@ -1,4 +1,10 @@
 import {k} from "./kaboom.js"
+
+scene("win", ({ score }) => {
+
+  onKeyPress("r", start)
+  
+
 let win = function(args) {
     add([
     text('yay'),
@@ -16,4 +22,4 @@ let win = function(args) {
     // enter text to go to next level, "press [blank] to get to next level"
   }
   
-  export {win}
+})

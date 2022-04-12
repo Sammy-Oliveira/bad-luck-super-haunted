@@ -1,10 +1,5 @@
 import {k} from "./kaboom.js"
 
-import {win} from "./win.js"
-scene('win', win);
-import {lose} from "./lose.js"
-scene('lose', lose);
-
 loadPedit("wood", "sprites/wood.pedit");
 loadPedit("door", "sprites/door.pedit");
 loadPedit("player", "sprites/player.pedit");
@@ -26,13 +21,8 @@ const MOVE_SPEED = 200
 const JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 
-scene("main", () => {
-
-})
-
-onKeyPress('k', go('main'))
-
-addLevel([
+const LEVELS = [
+  [
   '!                                        !',
   '!                                        !',
   '!                                        !', 
@@ -45,71 +35,34 @@ addLevel([
   '!                                        !',
   '!      ?   &     -   ^        ?          !',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+], 
+[
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+],
+]
+  
+scene("game", ({ levelIdx }) => {
+  
+  const level = addLevel(LEVELS[levelIdx || 0], {
 
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !', 
-  // '!                                        !',
-  // '!       !!!                  !!!         !',
-  // '!                                        !',
-  // '!                  !!!!                  !',
-  // '!                                        !',
-  // '!       !!!                  !!!         !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !', 
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !', 
-  // '!                                        !',
-  // '!        !!!                  !!!        !',
-  // '!                                        !',
-  // '!                   !                    !',
-  // '!                                        !',
-  // '!        !!!                  !!!        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-
-  // '!                                        !',
-  // '!                                        !',
-  // '!                                        !', 
-  // '!                                        !',
-  // '!        !!!                  !!!        !',
-  // '!                                        !',
-  // '!                   !                    !',
-  // '!                                        !',
-  // '!        !!!                  !!!        !',
-  // '!                                        !',
-  // '!                                        !',
-  // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-], {
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
   '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
- '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(),scale(0.7),],
+ '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(), scale(0.7),],
  '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), scale(0.7),],
   '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
   '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(0.5),],
 })
-
-scene('game', ({ levelIdx, score }))
 
 const door = add([
   sprite('door'),
@@ -140,6 +93,7 @@ const score = add([
   }
 ])
 
+//player movement
 keyDown('left', () => {
   player.move(-MOVE_SPEED, 0)
   player.flipX(true);
@@ -149,10 +103,6 @@ keyDown('right', () => {
   player.move(MOVE_SPEED, 0)
   player.flipX(false);
 })
-
-//onCollide('player', 'wood', () => {  
-//})
-
 
 keyPress('space', () => {
   if(player.isGrounded()) {
@@ -175,8 +125,6 @@ player.onCollide('enemy2', ()=> {
   shake(2);
   go('lose', { score: score.value})
 });
-
-//let CURRENT_ENEMY = ENEMY_SPEED
 
 action('enemy1', (s)=> {
   s.move(ENEMY_SPEED, 0)
@@ -209,17 +157,27 @@ onCollide('enemy2', 'invis-wall', (s,p)=> {
 })
 
 //next level 
-
-player.onCollide('door', ()=> {
-  keyPress('up', ()=> {
-      go('win', { score: score.value})
+player.onCollide("door", () => {
+  if (levelIdx < LEVELS.length - 1) {
+  // If there's a next level, go() to the same scene but load the next level
+  go("game", {
+  levelIdx: levelIdx + 1,
+      score: score,
+})
+  } else {
+  // Otherwise we have reached the end of game, go to "win" scene!
+  go("win", { score: score, })
+  }
   })
+
 })
 
-//action('flashlight', (s)=> {
-// s.move(ENEMY_SPEED, 0)
-//})
+function start() {
+  // Start with the "game" scene, with initial parameters
+  go("game", {
+  levelIdx: 0,
+  score: 0,
+  })
+}
 
-//onCollide('flashlight', 'invis-wall', ()=> {
-//ENEMY_SPEED = ENEMY_SPEED * -1
-  // })
+start()
