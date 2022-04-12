@@ -4,7 +4,6 @@ scene("win", ({ score }) => {
 
   onKeyPress("r", start)
   
-
 let win = function(args) {
     add([
     text('yay'),
