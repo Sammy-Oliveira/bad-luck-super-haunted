@@ -305,7 +305,7 @@ onCollide('enemy1', 'enemy2', (s,p)=> {
   BOSS_SPEED = BOSS_SPEED * -1
 
 })
-
+})
 function start() {
   // Start with the "game" scene, with initial parameters
   go("game", {
