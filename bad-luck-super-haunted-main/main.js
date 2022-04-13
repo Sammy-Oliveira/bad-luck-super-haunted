@@ -1,19 +1,14 @@
 import {k} from "./kaboom.js"
 
-import {win} from "./win.js"
-scene('win', win);
-import {lose} from "./lose.js"
-scene('lose', lose);
-
-loadPedit("wood", "sprites/wood.pedit");
-loadPedit("door", "sprites/door.pedit");
-loadPedit("player", "sprites/player.pedit");
-loadPedit("enemy1", "sprites/enemy1.pedit");
-loadPedit("enemy2", "sprites/enemy2.pedit");
-loadPedit("table", "sprites/table.pedit");
+loadSprite("wood", "sprites/wood.png");
+loadSprite("door", "sprites/door.png");
+loadSprite("player", "sprites/player.png");
+loadSprite("enemy1", "sprites/enemy1.png");
+loadSprite("enemy2", "sprites/enemy2.png");
+loadSprite("table", "sprites/table.png");
 //loadPedit("cat", "sprites/cat.pedit");
 loadSprite("cat", "sprites/cat.png");
-loadPedit("invis-wall", "sprites/invis-wall.pedit");
+loadSprite("invis-wall", "sprites/invis-wall.png");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
 // let img3 = loadImage(assets/player.png);
@@ -29,21 +24,40 @@ let ENEMY_SPEED = 50
 let BOSS_SPEED = 50
 let poss = false
 
-layer(['back','obj','ui'], 'obj')
-
-addLevel([
+const LEVELS = [
+  [
   '!                                        !',
   '!                                        !',
   '!                                        !', 
   '!                                        !',
   '!                                        !',
-  '!                   ~                    !',
+  '!                ?  &  ?                 !',
   '!                !!!!!!!                 !',
   '!                                        !',
   '!            !!               !!!!       !',
   '!                                        !',
   '!      ?                 ^    ?          !',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+], 
+[
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!       ?       &           ?          !',
+  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+],
+]
+  
+scene("game", ({ levelIdx }) => {
+  
+  const level = addLevel(LEVELS[levelIdx || 0], {
 
   // '!                                        !',
   // '!                                        !',
@@ -98,25 +112,64 @@ addLevel([
   // '!     !!!!        !!!!        !!!!       !',
   // '!                                        !',
   // '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-], {
+//], {
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
-  '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
-  '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
- '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(),scale(0.7),],
- '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), scale(0.7),],
-  '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
-  '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(1.2),],
+  '!' : ()=>[sprite('wood'), 'wood', solid(), area()],
+  '?' : ()=>[sprite('invis-wall'), 'invis-wall', area()],
+ '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body()],
+ '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), ],
+  '-' : ()=>[sprite('table'), 'table', area(), ],
+  '~' : ()=>[sprite('cat'), 'cat', area(), body(), ],
 })
 
+
 let door = add([
+
   sprite('door'),
   pos(1000, 296),
   width(32), 
   height(64),
   area(),
+  scale(1.7)
   //body(),
+])
+
+add([
+  text('use the left and right arrow keys to go left and right'),
+  origin('center'),
+  pos(0, height() / 7),
+])
+
+add([
+  text('jump using space'),
+  origin('center'),
+  pos(0, height() / 6),
+])
+
+add([
+  text('enter doors by pressing the up arrow key'),
+  origin('center'),
+  pos(0, height() / 5),
+])
+
+add([
+  text('attack pink enemies for points!'),
+  origin('center'),
+  pos(0, height() / 4),
+])
+
+add([
+  text('but dont let the yellow enemies hit you, or youll lose!'),
+  origin('center'),
+  pos(0, height() / 3),
+])
+
+add([
+  text('you can avoid the yellow by haunting objects, haunt and unhaunt objects by pressing down'),
+  origin('center'),
+  pos(0, height() / 2),
 ])
 
 let table = add([
@@ -125,7 +178,6 @@ let table = add([
   width(32), 
   height(64),
   area(),
-  scale(0.5),
   layer('obj')
   //body(),
 ])
@@ -133,7 +185,6 @@ let table = add([
 let player = add([
 	sprite("player"),
 	pos(40, 40),
-  scale(0.7),
 	area(),
   body(),
   layer('obj'),
@@ -142,12 +193,26 @@ let player = add([
 //next level 
 
 onKeyPress ("up", ()=> {
-  
   if (player.isColliding(door)) {
-    console.log("door");
-    go('win', { score: score.value})
-  }
+     if (levelIdx < LEVELS.length - 1) {
+  // If there's a next level, go() to the same scene but load the next level
+  go("game", {
+  levelIdx: levelIdx + 1,
+      score: score,
 })
+  } else {
+  // Otherwise we have reached the end of game, go to "win" scene!
+  go("win", { score: score })
+  }
+}
+})
+
+// //next level 
+// player.onCollide("door", () => {
+ 
+//   })
+
+
 
 onKeyPress ("down", ()=> {
   if (player.isColliding(table)) {
@@ -177,12 +242,12 @@ player.onUpdate(() => {
 const score = add([
   text('0'),
   pos(50,50),
-  layer('ui'),
   {
     value:0,
   }
 ])
 
+//player movement
 keyDown('left', () => {
   player.move(-MOVE_SPEED, 0)
   player.flipX(true);
@@ -192,10 +257,6 @@ keyDown('right', () => {
   player.move(MOVE_SPEED, 0)
   player.flipX(false);
 })
-
-//onCollide('player', 'wood', () => {  
-//})
-
 
 keyPress('space', () => {
   if(player.isGrounded()) {
@@ -225,8 +286,6 @@ player.onCollide('enemy2', ()=> {
   go('lose', { score: score.value})
   }
 });
-
-//let CURRENT_ENEMY = ENEMY_SPEED
 
 action('enemy1', (s)=> {
   s.move(ENEMY_SPEED, 0)
@@ -283,12 +342,18 @@ onCollide('enemy1', 'enemy2', (s,p)=> {
   // }
   ENEMY_SPEED = ENEMY_SPEED * -1,
   BOSS_SPEED = BOSS_SPEED * -1
+
 })
 
-//action('flashlight', (s)=> {
-// s.move(ENEMY_SPEED, 0)
-//})
 
-//onCollide('flashlight', 'invis-wall', ()=> {
-//ENEMY_SPEED = ENEMY_SPEED * -1
-  // })
+})
+
+function start() {
+  // Start with the "game" scene, with initial parameters
+  go("game", {
+  levelIdx: 0,
+  score: 0,
+  })
+}
+
+start()
