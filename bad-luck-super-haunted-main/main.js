@@ -116,6 +116,7 @@ scene("game", ({ levelIdx }) => {
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
+
   '!' : ()=>[sprite('wood'), 'wood', solid(), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', area()],
  '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body()],
@@ -355,5 +356,6 @@ function start() {
   score: 0,
   })
 }
+
 
 start()
