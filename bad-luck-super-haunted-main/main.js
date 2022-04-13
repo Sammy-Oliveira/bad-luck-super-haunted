@@ -1,14 +1,14 @@
 import {k} from "./kaboom.js"
 
-loadPedit("wood", "sprites/wood.pedit");
-loadPedit("door", "sprites/door.pedit");
-loadPedit("player", "sprites/player.pedit");
-loadPedit("enemy1", "sprites/enemy1.pedit");
-loadPedit("enemy2", "sprites/enemy2.pedit");
-loadPedit("table", "sprites/table.pedit");
+loadSprite("wood", "sprites/wood.png");
+loadSprite("door", "sprites/door.png");
+loadSprite("player", "sprites/player.png");
+loadSprite("enemy1", "sprites/enemy1.png");
+loadSprite("enemy2", "sprites/enemy2.png");
+loadSprite("table", "sprites/table.png");
 //loadPedit("cat", "sprites/cat.pedit");
 loadSprite("cat", "sprites/cat.png");
-loadPedit("invis-wall", "sprites/invis-wall.pedit");
+loadSprite("invis-wall", "sprites/invis-wall.png");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
 // let img3 = loadImage(assets/player.png);
@@ -31,7 +31,7 @@ const LEVELS = [
   '!                                        !', 
   '!                                        !',
   '!                                        !',
-  '!                   ~                    !',
+  '!                ?  &  ?                 !',
   '!                !!!!!!!                 !',
   '!                                        !',
   '!            !!               !!!!       !',
@@ -48,6 +48,9 @@ const LEVELS = [
   '!                                      !',
   '!                                      !',
   '!                                      !',
+  '!                                      !',
+  '!                                      !',
+  '!       ?       &           ?          !',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 ],
 ]
@@ -113,12 +116,13 @@ scene("game", ({ levelIdx }) => {
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
-  '!' : ()=>[sprite('wood'), 'wood', solid(), scale(0.5), area()],
-  '?' : ()=>[sprite('invis-wall'), 'invis-wall', scale(0.5), area()],
- '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body(), scale(0.7),],
- '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), scale(0.7),],
-  '-' : ()=>[sprite('table'), 'table', area(), scale(0.5),],
-  '~' : ()=>[sprite('cat'), 'cat', area(), body(), scale(1.2),],
+
+  '!' : ()=>[sprite('wood'), 'wood', solid(), area()],
+  '?' : ()=>[sprite('invis-wall'), 'invis-wall', area()],
+ '&' : ()=>[sprite('enemy1'), 'enemy1', area(), body()],
+ '^' : ()=>[sprite('enemy2'), 'enemy2', area(), body(), ],
+  '-' : ()=>[sprite('table'), 'table', area(), ],
+  '~' : ()=>[sprite('cat'), 'cat', area(), body(), ],
 })
 
 
@@ -129,7 +133,44 @@ let door = add([
   width(32), 
   height(64),
   area(),
+  scale(1.7)
   //body(),
+])
+
+add([
+  text('use the left and right arrow keys to go left and right'),
+  origin('center'),
+  pos(0, height() / 7),
+])
+
+add([
+  text('jump using space'),
+  origin('center'),
+  pos(0, height() / 6),
+])
+
+add([
+  text('enter doors by pressing the up arrow key'),
+  origin('center'),
+  pos(0, height() / 5),
+])
+
+add([
+  text('attack pink enemies for points!'),
+  origin('center'),
+  pos(0, height() / 4),
+])
+
+add([
+  text('but dont let the yellow enemies hit you, or youll lose!'),
+  origin('center'),
+  pos(0, height() / 3),
+])
+
+add([
+  text('you can avoid the yellow by haunting objects, haunt and unhaunt objects by pressing down'),
+  origin('center'),
+  pos(0, height() / 2),
 ])
 
 let table = add([
@@ -138,7 +179,6 @@ let table = add([
   width(32), 
   height(64),
   area(),
-  scale(0.5),
   layer('obj')
   //body(),
 ])
@@ -146,7 +186,6 @@ let table = add([
 let player = add([
 	sprite("player"),
 	pos(40, 40),
-  scale(0.7),
 	area(),
   body(),
   layer('obj'),
@@ -164,8 +203,9 @@ onKeyPress ("up", ()=> {
 })
   } else {
   // Otherwise we have reached the end of game, go to "win" scene!
-  go("win", { score: score, })
+  go("win", { score: score })
   }
+}
 })
 
 // //next level 
@@ -305,7 +345,10 @@ onCollide('enemy1', 'enemy2', (s,p)=> {
   BOSS_SPEED = BOSS_SPEED * -1
 
 })
+
+
 })
+
 function start() {
   // Start with the "game" scene, with initial parameters
   go("game", {
@@ -313,5 +356,6 @@ function start() {
   score: 0,
   })
 }
+
 
 start()
