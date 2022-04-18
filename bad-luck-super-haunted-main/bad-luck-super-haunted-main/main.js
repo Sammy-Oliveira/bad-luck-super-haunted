@@ -9,6 +9,7 @@ loadSprite("table", "sprites/table.png");
 //loadPedit("cat", "sprites/cat.pedit");
 loadSprite("cat", "sprites/cat.png");
 loadSprite("invis-wall", "sprites/invis-wall.png");
+loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
 // let img3 = loadImage(assets/player.png);
@@ -40,7 +41,7 @@ const LEVELS = [
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 ], 
 [
-  '                                        ',
+  ' ~                                      ',
   '                                        ',
   '                                        ',
   '                                        ',
@@ -66,6 +67,11 @@ const LEVELS = [
   '                                          ',
   '                                          ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+  '                                          ',
+  '                                          ',
+  '                                          ',
+  '                                          ',
+  ' -                                        ',
 ],
 [
   '                                          ',
@@ -78,7 +84,7 @@ const LEVELS = [
   '              !!!!!                       ',
   '      ? ^ ?                  ~            ',
   '      !!!!!                 !!!           ',
-  '                                          ',
+  '                -                         ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
  ],
  [
@@ -87,12 +93,12 @@ const LEVELS = [
   '       !!!!!!!             !!!!!!!        ', 
   '                                          ',
   '                   !!!!                   ',
-  '                                          ',
+  '                             ~            ',
   '          !!!!             !!!!           ',
   '                                          ',
   '                   !!!!                   ',
   '          !!!!             !!!!           ',
-  ' ?                  ^                   ? ',
+  ' ?    -             ^                   ? ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
  ],
  [
@@ -106,7 +112,7 @@ const LEVELS = [
   '            !!!!         !!!!             ',
   '      ?  ?        ?  ?        ?  ?        ',
   '      !!!!        !!!!        !!!!        ',
-  '                                          ',
+  '            ~-                            ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
  ],
 ]
@@ -122,11 +128,14 @@ let go_cat = () => {return [
   'cat',
   area(),
 ]}
+
+add([ sprite("spoopy", {width: width() * 2, height: height() * 2})
+  ]);
   
 scene("game", ({ levelIdx }) => {
   
   const level = addLevel(LEVELS[levelIdx || 0], {
-  
+    
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
@@ -226,7 +235,15 @@ onKeyPress ("up", ()=> {
 
 
 onKeyPress ("down", ()=> {
-  poss =! poss;
+  let t = get('table')[0]
+  if (player.isColliding(t)) {
+    poss =! poss;
+    if(poss==true){
+    MOVE_SPEED = 0,
+    JUMP_FORCE = 0
+    player.unuse(sprite('player'))
+    player.use(sprite('table'))
+    }
   if(poss==false){
     console.log("false"),
     MOVE_SPEED = 200,
@@ -234,36 +251,28 @@ onKeyPress ("down", ()=> {
     player.use(sprite('player'))
     player.unuse(sprite('table'))
     }
-  let t = get('table')[0]
-  if (player.isColliding(t)) {
-    if(poss==true){
-    MOVE_SPEED = 0,
-    JUMP_FORCE = 0
-    player.unuse(sprite('player'))
-    player.use(sprite('table'))
-    }
   }
 })
 
 //preparing for cat possession
 
-// onKeyPress ("down", ()=> {
-//   poss =! poss;
-//   let c = get('cat')[0]
-//   if(poss==false){
-//     console.log("false"),
-//     MOVE_SPEED = 200,
-//     JUMP_FORCE = 550
-//     player.use(sprite('player'))
-//     player.unuse(sprite('cat'))
-//     }
-//   if (player.isColliding(c)) {
-//     if(poss==true){
-//     player.unuse(sprite('player'))
-//     player.use(sprite('cat'))
-//     }
-//   }
-// })
+onKeyPress ("down", ()=> {
+  poss =! poss;
+  let c = get('cat')[0]
+  if(poss==false){
+    console.log("false"),
+    MOVE_SPEED = 200,
+    JUMP_FORCE = 550
+    player.use(sprite('player'))
+    player.unuse(sprite('cat'))
+    }
+  if (player.isColliding(c)) {
+    if(poss==true){
+    player.unuse(sprite('player'))
+    player.use(sprite('cat'))
+    }
+  }
+})
 
 
 player.onUpdate(() => {
