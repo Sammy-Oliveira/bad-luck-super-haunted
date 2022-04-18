@@ -22,3 +22,11 @@ let win = function(args) {
   }
   
 })
+
+function start() {
+  // Start with the "game" scene, with initial parameters
+  go("game", {
+  levelIdx: 0,
+  score: 0,
+  })
+}
