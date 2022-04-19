@@ -25,6 +25,7 @@ let ENEMY_SPEED = 50
 let BOSS_SPEED = 110
 let possT = false
 let possC = false
+let levelIdx = 0
 
 const LEVELS = [
   [
