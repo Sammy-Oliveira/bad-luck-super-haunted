@@ -22,8 +22,9 @@ loadSprite("spoopy", "sprites/spoopy.jpg");
 let MOVE_SPEED = 220
 let JUMP_FORCE = 550
 let ENEMY_SPEED = 50
-let BOSS_SPEED = 75
-let poss = false
+let BOSS_SPEED = 110
+let possT = false
+let possC = false
 
 const LEVELS = [
   [
@@ -32,12 +33,12 @@ const LEVELS = [
   '                                          ', 
   '                                          ',
   '                                          ',
-  '                 ?- &  ?                  ',
+  '                 ?  &  ?                  ',
   '                 !!!!!!!                  ',
   '                                          ',
   '             !!               !!!!        ',
   '                                          ',
-  '    ~  ?                 ^    ?           ',
+  '        ?  ~  -          ^    ?           ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 ], 
 [
@@ -191,7 +192,7 @@ add([
 ])
 
 add([
-  text('you can avoid the yellow by haunting objects like tables, haunt and unhaunt objects by pressing down'),
+  text('you can avoid the yellow by haunting objects like tables by pressing "T" or cats by pressing "C"'),
   origin('center'),
   pos(0, height() / 2.5),
 ])
@@ -234,45 +235,45 @@ onKeyPress ("up", ()=> {
 
 
 
-onKeyPress ("down", ()=> {
-  let t = get('table')[0]
-  if (player.isColliding(t)) {
-    poss =! poss;
-    if(poss==true){
+ onKeyPress ("t", ()=> {
+   let t = get('table')[0]
+   if (player.isColliding(t)) {  
+    possT =! possT;
+    if(possT==true){
+      console.log("true")
     MOVE_SPEED = 0,
     JUMP_FORCE = 0
-    player.unuse(sprite('player'))
-    player.use(sprite('table'))
-    }
-  if(poss==false){
-    console.log("false"),
+ player.unuse(sprite('player'))
+   player.use(sprite('table'))
+     }
+  if(possT==false){
     MOVE_SPEED = 200,
     JUMP_FORCE = 550
-    player.use(sprite('player'))
+   player.use(sprite('player'))
     player.unuse(sprite('table'))
-    }
   }
-})
+  }
+ })
 
 //preparing for cat possession
 
-onKeyPress ("down", ()=> {
-  poss =! poss;
+onKeyPress ("c", ()=> {
+  possC =! possC;
   let c = get('cat')[0]
-  if(poss==false){
-    console.log("false"),
+  if (player.isColliding(c)) {
+    if(possC==true){
+    player.unuse(sprite('player'))
+    player.use(sprite('cat'))
+    }
+  }
+  if(possC==false){
     MOVE_SPEED = 200,
     JUMP_FORCE = 550
     player.use(sprite('player'))
     player.unuse(sprite('cat'))
     }
-  if (player.isColliding(c)) {
-    if(poss==true){
-    player.unuse(sprite('player'))
-    player.use(sprite('cat'))
-    }
-  }
 })
+
 
 
 player.onUpdate(() => {
@@ -306,7 +307,7 @@ keyPress('space', () => {
 
 //player destroys enemy
 player.onCollide('enemy1', (e)=> {
-  if(poss==false){
+  if(possT==false && possC==false){
   destroy(e);
   shake(2);
   score.value++
@@ -318,10 +319,10 @@ player.onCollide('enemy1', (e)=> {
 
 //flashlight destroys player
 player.onCollide('enemy2', ()=> {
-  if(poss==true){
+  if(possT==true || possC==true){
     BOSS_SPEED = BOSS_SPEED * -1;
   }
-  if(poss==false){
+  if(possT==false && possC==false){
   destroy(player);
   shake(2);
   go('lose', { score: score.value})
