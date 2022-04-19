@@ -3,8 +3,7 @@ import { k } from "./kaboom.js"
 scene("lose", (args) => {
 
   // Press any key to go back
-  onKeyPress("r", ()=> {
-  go("game")})
+  onKeyPress("r", start)
   
 
   add([
@@ -29,3 +28,10 @@ scene("lose", (args) => {
   ])
 })
 
+function start() {
+  // Start with the "game" scene, with initial parameters
+  go("game", {
+  levelIdx: 0,
+  score: 0,
+  })
+}
