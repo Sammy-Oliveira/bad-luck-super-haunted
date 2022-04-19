@@ -11,7 +11,7 @@ loadSprite("invis-wall", "sprites/invis-wall.png");
 
 
 
-loadSprite("spoopy", "sprites/spoopy.jpg");
+//loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
 // let img3 = loadImage(assets/player.png);
@@ -28,6 +28,7 @@ let ENEMY_SPEED = 50
 let BOSS_SPEED = 75
 let poss = false
 let levelIdx = 0
+let scorevalue = 0
 
 const LEVELS = [
   [
@@ -133,8 +134,8 @@ let go_cat = () => {return [
   area(),
 ]}
 
-add([ sprite("spoopy", {width: width() * 2, height: height() * 2})
-  ]);
+// add([ sprite("spoopy", {width: width() * 2, height: height() * 2})
+//   ]);
   
 scene("game", ({ levelIdx }) => {
   
@@ -214,6 +215,20 @@ let player = add([
   body(),
 ])
 
+onKeyPress("space", () => {
+  console.log(player.pos)
+})
+
+player.onUpdate(() => {
+if(player.pos.y >= 1000) {
+  go('lose', {
+    score: score.value,
+    levelIdx: 0,
+  }
+  )
+}
+})
+
 //next level 
 
 onKeyPress ("up", ()=> {
@@ -222,11 +237,11 @@ onKeyPress ("up", ()=> {
   // If there's a next level, go() to the same scene but load the next level
   go("game", {
   levelIdx: levelIdx + 1,
-      score: score,
+      score: score.value,
 })
   } else {
   // Otherwise we have reached the end of game, go to "win" scene!
-  go("win", { score: score })
+  go("win", { score: score.value })
   }
 }
 })
@@ -283,13 +298,18 @@ player.onUpdate(() => {
   camPos(player.pos)
 })
 
-const score = add([
-  text('0'),
-  pos(50,50),
+let score = add([
   {
-    value:0,
-  }
+    value:scorevalue,
+  },
 ])
+
+onKeyPress("space", () => {
+  // pos(50, 50),
+  // text(score.value),
+  console.log(score.value)
+})
+
 
 //player movement
 onKeyDown('left', () => {
