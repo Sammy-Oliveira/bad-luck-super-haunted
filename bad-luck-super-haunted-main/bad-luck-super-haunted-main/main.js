@@ -6,9 +6,11 @@ loadSprite("player", "sprites/player.png");
 loadSprite("enemy1", "sprites/enemy1.png");
 loadSprite("enemy2", "sprites/enemy2.png");
 loadSprite("table", "sprites/table.png");
-//loadPedit("cat", "sprites/cat.pedit");
 loadSprite("cat", "sprites/cat.png");
 loadSprite("invis-wall", "sprites/invis-wall.png");
+
+
+
 loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
@@ -19,11 +21,13 @@ loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img7 = loadImage(assets/cat.png);
 // let img8 = loadImage(assets/invis-wall.png);
 
+
 let MOVE_SPEED = 220
 let JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 let BOSS_SPEED = 75
 let poss = false
+let levelIdx = 0
 
 const LEVELS = [
   [
@@ -288,17 +292,17 @@ const score = add([
 ])
 
 //player movement
-keyDown('left', () => {
+onKeyDown('left', () => {
   player.move(-MOVE_SPEED, 0)
   player.flipX(true);
 })
 
-keyDown('right', () => {
+onKeyDown('right', () => {
   player.move(MOVE_SPEED, 0)
   player.flipX(false);
 })
 
-keyPress('space', () => {
+onKeyPress('space', () => {
   if(player.isGrounded()) {
     player.jump(JUMP_FORCE)
   }
@@ -328,12 +332,12 @@ player.onCollide('enemy2', ()=> {
   }
 });
 
-action('enemy1', (s)=> {
+onUpdate('enemy1', (s)=> {
   s.move(ENEMY_SPEED, 0)
   
 })
 
-action('enemy2', (s)=> {
+onUpdate('enemy2', (s)=> {
   s.move(BOSS_SPEED, 0)
   
 })
