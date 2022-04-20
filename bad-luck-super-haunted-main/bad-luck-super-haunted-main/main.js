@@ -134,14 +134,15 @@ let go_cat = () => {return [
   'cat',
   area(),
 ]}
-
-add([ sprite("spoopy", {width: width() * 2, height: height() * 2})
-  ]);
   
 scene("game", ({ levelIdx }) => {
+
+  layers(['spoopy', 'obj'], 'obj')
+  add([ sprite("spoopy", {width: width(), height: height()})
+  ]);
   
   const level = addLevel(LEVELS[levelIdx || 0], {
-    
+
   width: 32,
   height: 32,
   //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
