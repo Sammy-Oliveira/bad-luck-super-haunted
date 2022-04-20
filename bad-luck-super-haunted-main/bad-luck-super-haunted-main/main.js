@@ -39,10 +39,10 @@ const LEVELS = [
   '                                          ',
   '                 ?- &  ?                  ',
   '                 !!!!!!!                  ',
-  '                                          ',
+  '              &                  &          ',
   '             !!               !!!!        ',
   '                                          ',
-  '    ~  ?                 ^    ?           ',
+  '?    ~  ?    &     &        ^    ?        ?   ',
   '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
 ], 
 [
@@ -153,7 +153,6 @@ scene("game", ({ levelIdx }) => {
   '~' : go_cat,
 })
 
-
 let door = add([
 
   sprite('door'),
@@ -215,10 +214,6 @@ let player = add([
   body(),
 ])
 
-onKeyPress("space", () => {
-  console.log(player.pos)
-})
-
 player.onUpdate(() => {
 if(player.pos.y >= 1000) {
   go('lose', {
@@ -228,30 +223,6 @@ if(player.pos.y >= 1000) {
   )
 }
 })
-
-//next level 
-
-onKeyPress ("up", ()=> {
-  if (player.isColliding(door)) {
-     if (levelIdx < LEVELS.length - 1) {
-  // If there's a next level, go() to the same scene but load the next level
-  go("game", {
-  levelIdx: levelIdx + 1,
-      score: score.value,
-})
-  } else {
-  // Otherwise we have reached the end of game, go to "win" scene!
-  go("win", { score: score.value })
-  }
-}
-})
-
-// //next level 
-// player.onCollide("door", () => {
- 
-//   })
-
-
 
 onKeyPress ("down", ()=> {
   let t = get('table')[0]
@@ -293,7 +264,6 @@ onKeyPress ("down", ()=> {
   }
 })
 
-
 player.onUpdate(() => {
   camPos(player.pos)
 })
@@ -303,6 +273,8 @@ let score = add([
     value:scorevalue,
   },
 ])
+
+
 
 onKeyPress("space", () => {
   // pos(50, 50),
@@ -337,8 +309,26 @@ player.onCollide('enemy1', (e)=> {
   score.text = score.value
   }
   ENEMY_SPEED = ENEMY_SPEED * -1;
+  let scoredisplay = add([
+    pos(player.pos.x, player.pos.y),
+    text(score.value),
+  ])
 });
 
+onKeyPress ("up", ()=> {
+  if (player.isColliding(door) && score.value == 5) {
+     if (levelIdx < LEVELS.length - 1) {
+  // If there's a next level, go() to the same scene but load the next level
+  go("game", {
+  levelIdx: levelIdx + 1,
+      score: score.value,
+})
+  } else {
+  // Otherwise we have reached the end of game, go to "win" scene!
+  go("win", { score: score.value })
+  }
+}
+})
 
 //flashlight destroys player
 player.onCollide('enemy2', ()=> {
