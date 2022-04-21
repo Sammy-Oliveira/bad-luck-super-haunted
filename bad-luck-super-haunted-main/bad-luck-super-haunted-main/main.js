@@ -11,7 +11,7 @@ loadSprite("invis-wall", "sprites/invis-wall.png");
 
 
 
-//loadSprite("spoopy", "sprites/spoopy.jpg");
+loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img1 = loadImage(assets/wood.png);
 // let img2 = loadImage(assets/door.png);
 // let img3 = loadImage(assets/player.png);
