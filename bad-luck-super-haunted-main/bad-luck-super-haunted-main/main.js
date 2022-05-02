@@ -32,6 +32,7 @@ let possT = false
 let possC = false
 let levelIdx = 0
 let scorevalue = 0
+let checkpoint = 0
 
 const LEVELS = [
   [
@@ -161,6 +162,8 @@ let go_cat = () => {return [
   area(),
 ]}
   
+
+
 scene("game", ({ levelIdx }) => {
 
   layers(['spoopy', 'obj'], 'obj')
@@ -192,6 +195,7 @@ let door = add([
   //body(),
 ])
 
+if (levelIdx == 0 ) {
 add([
   text('use the left and right arrow keys to go left and right'),
   origin('center'),
@@ -233,7 +237,7 @@ add([
   origin('center'),
   pos(0, height() / 2),
 ])
-
+}
 
 let player = add([
 	sprite("player"),
@@ -352,6 +356,7 @@ onKeyPress ("up", ()=> {
   if (player.isColliding(door) && score.value == 5) {
      if (levelIdx < LEVELS.length - 1) {
   // If there's a next level, go() to the same scene but load the next level
+  checkpoint = checkpoint + 1,
   go("game", {
   levelIdx: levelIdx + 1,
       score: score.value,
@@ -432,17 +437,75 @@ onCollide('enemy1', 'enemy2', (s,p)=> {
   BOSS_SPEED = BOSS_SPEED * -1
 
 })
-
-
 })
 
 function start() {
   // Start with the "game" scene, with initial parameters
-  go("game", {
+  go("title", {
   levelIdx: 0,
   score: 0,
   })
 }
 
+scene("title", ({}) => {
+  function addButton(txt, p, f) {
+    const btn = add([
+      text(txt),
+      pos(p),
+      area({ cursor: "pointer", }),
+      scale(1),
+      origin("center"),
+    ])
+  
+    btn.onClick(f)
+  
+    btn.onUpdate(() => {
+      if (btn.isHovering()) {
+        const t = time() * 10
+        btn.color = rgb(
+          wave(0, 255, t),
+          wave(0, 255, t + 2),
+          wave(0, 255, t + 4),
+        )
+        btn.scale = vec2(1.2)
+      } else {
+        btn.scale = vec2(1)
+        btn.color = rgb()
+      }
+    })
+  
+  }
+  
+  addButton("Start", vec2(200, 100), () => go('game', {levelIdx: 0, score: 0}))
+  addButton("Quit", vec2(200, 200), () => go('lose'))
+})
 
 start()
+
+scene("lose", (args) => {
+
+  // Press any key to go back
+  onKeyPress("r", go('game', {levelIdx: checkpoint, score: 0}))
+  
+  add([
+    text('goodbye'),
+    origin('center'),
+    pos(width() / 2, height() / 3),
+    scale(2),
+  ])
+
+  add([
+    text('Press "R" to restart level'),
+    origin('center'),
+    pos(width() / 2, height() / 2),
+    scale(1.5)
+  ])
+
+  add([
+    text('score:' + args.score),
+    origin('center'),
+    pos(width() / 2, height() / 1.5),
+    // scale(5),
+  ])
+})
+
