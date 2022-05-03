@@ -54,8 +54,8 @@ const LEVELS = [
   '     ~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ',
   '    !!!                                !!!',
   '      !                                !  ',
-  '      !        ?  &  ?                 !  ',
-  '      !         !!!!!    ?  &  ?       !  ',
+  '      !        ?  &   ?                 !  ',
+  '      !         !!!!!!   ?  &  ?       !  ',
   '      !                   !!!!!        !  ',
   '      !                                !  ',
   '      !  ?  &  ?              ?  &  ?  !  ',
@@ -88,10 +88,10 @@ const LEVELS = [
   '             !!!!         !  !!!!!!             !!!!',
   '                          !                        !',
   '                   ? &  ? !                        !',
-  '                   !!!!!  !          !!     !      !',
+  '                   !!!!!  !          !!    !!      !',
   '                          !                        !',
   '                          !                        !', 
-  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!               !!!!!',
  ],
  [
    //make possession more necessary
@@ -130,7 +130,7 @@ const LEVELS = [
   '            !                           !                        ',
   '  ? ^  ?    !!!!!!!                     !? &  ?                   ',
   '  !!!!!           !                     !!!!!!!!!!!!           ',
-  '          ? &  ?  !                     !    !!!!!!!!          ',  
+  '           ? &  ? !                     !    !!!!!!!!          ',  
   '!!!         !!!!!!!                     !    !                ',
   '     ? &  ? !                  !!       !    !         ? ^  ?          ',
   '      !!!!!!!                    !      !    !         !!!!!!!     ',
@@ -345,7 +345,7 @@ player.onCollide('enemy1', (e)=> {
   score.value++
   score.text = score.value
   }
-  ENEMY_SPEED = ENEMY_SPEED * -1;
+  e.move(ENEMY_SPEED  * -1);
   let scoredisplay = add([
     pos(player.pos.x, player.pos.y),
     text(score.value),
@@ -363,7 +363,7 @@ onKeyPress ("up", ()=> {
 })
   } else {
   // Otherwise we have reached the end of game, go to "win" scene!
-  go("win", { score: score.value })
+  go("win", )
   }
 }
 })
@@ -447,7 +447,42 @@ function start() {
   })
 }
 
+onKeyPress('k', ()=> go('game', levelIdx = levelIdx + 1, score = 0))  
+
+scene('win', () => {
+  function addButton(txt, p, f) {
+    const buton = add([
+      text(txt),
+      pos(p),
+      area({ cursor: "pointer", }),
+      scale(3),
+      origin('center'),
+    ])
+
+    buton.onClick(f)
+
+    buton.onUpdate(() => {
+      if (buton.isHovering()) {
+        const tt = time() * 15
+        buton.color = rgb(
+          wave(0, 255, tt),
+          wave(0, 150, tt + 2),
+          wave(0 ,0, 255),
+        )
+        buton.scale = vec2(1.4)
+      } else {
+        buton.scale = vec2(1)
+        buton.color = rgb(255, 0, 255)
+      }
+    })
+  }
+
+  addButton("Restart", vec2(200, 100), () => go('game', {levelIdx: 0, score: 0}))
+
+})
+
 scene("title", ({}) => {
+
   function addButton(txt, p, f) {
     const btn = add([
       text(txt),
