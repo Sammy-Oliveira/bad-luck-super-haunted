@@ -10,16 +10,7 @@ loadSprite("cat", "sprites/cat.png");
 loadSprite("invis-wall", "sprites/invis-wall.png");
 
 
-
 loadSprite("spoopy", "sprites/spoopy.jpg");
-// let img1 = loadImage(assets/wood.png);
-// let img2 = loadImage(assets/door.png);
-// let img3 = loadImage(assets/player.png);
-// let img4 = loadImage(assets/enemy1.png);
-// let img5 = loadImage(assets/flashlight.png);
-// let img6 = loadImage(assets/table.png);
-// let img7 = loadImage(assets/cat.png);
-// let img8 = loadImage(assets/invis-wall.png);
 
 
 let MOVE_SPEED = 240
@@ -54,8 +45,8 @@ const LEVELS = [
   '     ~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ',
   '    !!!                                !!!',
   '      !                                !  ',
-  '      !        ?  &  ?                 !  ',
-  '      !         !!!!!    ?  &  ?       !  ',
+  '      !        ?  &   ?                 !  ',
+  '      !         !!!!!!   ?  &  ?       !  ',
   '      !                   !!!!!        !  ',
   '      !                                !  ',
   '      !  ?  &  ?              ?  &  ?  !  ',
@@ -88,10 +79,10 @@ const LEVELS = [
   '             !!!!         !  !!!!!!             !!!!',
   '                          !                        !',
   '                   ? &  ? !                        !',
-  '                   !!!!!  !          !!     !      !',
+  '                   !!!!!  !          !!    !!      !',
   '                          !                        !',
   '                          !                        !', 
-  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+  '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!               !!!!!',
  ],
  [
    //make possession more necessary
@@ -130,7 +121,7 @@ const LEVELS = [
   '            !                           !                        ',
   '  ? ^  ?    !!!!!!!                     !? &  ?                   ',
   '  !!!!!           !                     !!!!!!!!!!!!           ',
-  '          ? &  ?  !                     !    !!!!!!!!          ',  
+  '           ? &  ? !                     !    !!!!!!!!          ',  
   '!!!         !!!!!!!                     !    !                ',
   '     ? &  ? !                  !!       !    !         ? ^  ?          ',
   '      !!!!!!!                    !      !    !         !!!!!!!     ',
@@ -161,8 +152,6 @@ let go_cat = () => {return [
   'cat',
   area(),
 ]}
-  
-
 
 scene("game", ({ levelIdx }) => {
 
@@ -174,7 +163,6 @@ scene("game", ({ levelIdx }) => {
 
   width: 32,
   height: 32,
-  //'#' : ()=>[sprite('door'), 'door', scale(0.7),],
 
   '!' : ()=>[sprite('wood'), 'wood', solid(), area()],
   '?' : ()=>[sprite('invis-wall'), 'invis-wall', area()],
@@ -185,7 +173,6 @@ scene("game", ({ levelIdx }) => {
 })
 
 let door = add([
-
   sprite('door'),
   pos(1000, 296),
   width(32), 
@@ -255,14 +242,6 @@ if(player.pos.y >= 1000) {
   )
 }
 })
-
-
-// //next level 
-// player.onCollide("door", () => {
- 
-//   })
-
-
 
  onKeyPress ("t", ()=> {
    let t = get('table')[0]
@@ -345,7 +324,7 @@ player.onCollide('enemy1', (e)=> {
   score.value++
   score.text = score.value
   }
-  ENEMY_SPEED = ENEMY_SPEED * -1;
+  e.move(ENEMY_SPEED  * -1);
   let scoredisplay = add([
     pos(player.pos.x, player.pos.y),
     text(score.value),
@@ -363,7 +342,7 @@ onKeyPress ("up", ()=> {
 })
   } else {
   // Otherwise we have reached the end of game, go to "win" scene!
-  go("win", { score: score.value })
+  go("win", {score: 0})
   }
 }
 })
@@ -382,12 +361,10 @@ player.onCollide('enemy2', ()=> {
 
 onUpdate('enemy1', (s)=> {
   s.move(ENEMY_SPEED, 0)
-  
 })
 
 onUpdate('enemy2', (s)=> {
   s.move(BOSS_SPEED, 0)
-  
 })
 
 //enemy movement
@@ -401,12 +378,6 @@ onCollide('enemy1', 'invis-wall', (s,p)=> {
   ENEMY_SPEED = ENEMY_SPEED * -1
 })
 
-// if(ENEMY_SPEED == 50){
-//   s.flipX(false);
-// } else{
-//  s.flipX(true);
-// }
-
 onCollide('enemy2', 'invis-wall', (s,p)=> {
   if(BOSS_SPEED == 50){
     s.flipX(false);
@@ -416,27 +387,10 @@ onCollide('enemy2', 'invis-wall', (s,p)=> {
   BOSS_SPEED = BOSS_SPEED * -1
 })
 
-// if(BOSS_SPEED == 50){
-//   s.flipX(false);
-// } else{
-//  s.flipX(true);
-// }
-
 onCollide('enemy1', 'enemy2', (s,p)=> {
-  // if(ENEMY_SPEED == -50){
-  //   s.flipX(false);
-  // } else{
-  //  s.flipX(true);
-  // }
-  // if(BOSS_SPEED == -50){
-  //   p.flipX(false);
-  // } else{
-  //  p.flipX(true);
-  // }
   ENEMY_SPEED = ENEMY_SPEED * -1,
   BOSS_SPEED = BOSS_SPEED * -1
-
-})
+  })
 })
 
 function start() {
@@ -447,7 +401,9 @@ function start() {
   })
 }
 
-scene("title", ({}) => {
+onKeyPress('k', ()=> go('game', {levelIdx: levelIdx + 1}))  
+
+scene('win', () => {
   function addButton(txt, p, f) {
     const btn = add([
       text(txt),
@@ -473,14 +429,55 @@ scene("title", ({}) => {
         btn.color = rgb()
       }
     })
+  }
   
+  addButton("Restart", vec2(200, 100), () => go('game', {levelIdx: 0, score: 0}))
+  add([
+    text('Congratulations!'),
+    origin('center'),
+    scale(5),
+    pos(width() / 2, height() / 3),
+  ])
+  add([
+    text('You beat the game! Woo hoo!'),
+    origin('center'),
+    scale(5),
+    pos(width() / 2, height() / 2.3),
+  ])
+})
+
+scene("title", ({}) => {
+
+  function addButton(txt, p, f) {
+    const btn = add([
+      text(txt),
+      pos(p),
+      area({ cursor: "pointer", }),
+      scale(1),
+      origin("center"),
+    ])
+  
+    btn.onClick(f)
+  
+    btn.onUpdate(() => {
+      if (btn.isHovering()) {
+        const t = time() * 10
+        btn.color = rgb(
+          wave(0, 255, t),
+          wave(0, 255, t + 2),
+          wave(0, 255, t + 4),
+        )
+        btn.scale = vec2(1.2)
+      } else {
+        btn.scale = vec2(1)
+        btn.color = rgb()
+      }
+    })
   }
   
   addButton("Start", vec2(200, 100), () => go('game', {levelIdx: 0, score: 0}))
   addButton("Quit", vec2(200, 200), () => go('lose'))
 })
-
-start()
 
 scene("lose", (args) => {
 
@@ -508,4 +505,7 @@ scene("lose", (args) => {
     // scale(5),
   ])
 })
+
+start()
+
 
