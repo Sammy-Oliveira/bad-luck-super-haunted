@@ -21,8 +21,8 @@ loadSprite("spoopy", "sprites/spoopy.jpg");
 // let img7 = loadImage(assets/cat.png);
 // let img8 = loadImage(assets/invis-wall.png);
 
-
-let MOVE_SPEED = 240
+//consider increasing move speed more to make controls seem more responsive and less floaty
+let MOVE_SPEED = 260
 let JUMP_FORCE = 550
 let ENEMY_SPEED = 50
 
@@ -54,8 +54,8 @@ const LEVELS = [
   '     ~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ',
   '    !!!                                !!!',
   '      !                                !  ',
-  '      !        ?  &  ?                 !  ',
-  '      !         !!!!!    ?  &  ?       !  ',
+  '      !         ?  &  ?                !  ',
+  '      !          !!!!!   ?  &  ?       !  ',
   '      !                   !!!!!        !  ',
   '      !                                !  ',
   '      !  ?  &  ?              ?  &  ?  !  ',
@@ -75,8 +75,8 @@ const LEVELS = [
 [
   //another stunted level, see if you can stretch it
   '                                                   !',
-  '             ? &  ?   ? &  ?                       !', 
-  '              !!!!     !!!!   !!!!!          ? &  ?!',
+  '             ? &  ?  ? &  ?                       !', 
+  '              !!!!    !!!!   !!!!!          ? &  ?!',
   '                                  !          !!!!!!!',
   '            ?   ^  ?   ^  ? - ^  ?!?   ^  ?        !',
   '             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!         !',
@@ -393,11 +393,11 @@ onUpdate('enemy2', (s)=> {
 //enemy movement
 
 onCollide('enemy1', 'invis-wall', (s,p)=> {
-  if(ENEMY_SPEED == 50){
-    s.flipX(false);
-  } else{
-   s.flipX(true);
-  }
+  // if(ENEMY_SPEED == 50){
+  //   s.flipX(false);
+  // } else{
+  //  s.flipX(true);
+  // }
   ENEMY_SPEED = ENEMY_SPEED * -1
 })
 
@@ -408,11 +408,7 @@ onCollide('enemy1', 'invis-wall', (s,p)=> {
 // }
 
 onCollide('enemy2', 'invis-wall', (s,p)=> {
-  if(BOSS_SPEED == 50){
-    s.flipX(false);
-  } else{
-   s.flipX(true);
-  }
+ //got rid of spite flip since sprite is symetrical
   BOSS_SPEED = BOSS_SPEED * -1
 })
 
